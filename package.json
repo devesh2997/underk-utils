@@ -1,10 +1,11 @@
 {
-  "name": "underk-utils",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "@types/lodash": "^4.14.157",
-    "lodash": "^4.17.19"
-  }
+    "name": "underk-utils",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "license": "MIT",
+    "dependencies": {
+        "@types/lodash": "^4.14.157",
+        "lodash": "^4.17.19"
+    }
 }
