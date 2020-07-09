@@ -26,3 +26,8 @@ export declare const getResponseStatus: (status: number) => {
     isServerError: boolean;
     isUnauthorized: boolean;
 };
+export declare const maskEmail: (email: string) => string;
+export declare const stringArrayToCommaSeparatedString: (arr: string[]) => string;
+export declare const generateOtp: (numDigits?: number) => string;
+export declare const addDays: (date: Date, days: number) => Date;
+export declare const addMinutes: (date: Date, minutes: number) => Date;

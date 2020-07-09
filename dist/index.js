@@ -96,4 +96,47 @@ exports.getResponseStatus = (status) => {
         isUnauthorized: status === 401,
     };
 };
+exports.maskEmail = (email) => {
+    let str, parts;
+    str = "";
+    parts = email.split('@');
+    const part = parts[0];
+    for (let i = 0; i < part.length; i++) {
+        if (i == 0 || i == part.length - 1) {
+            str += part[i];
+        }
+        else {
+            str += '*';
+        }
+    }
+    return str + '@' + parts[1];
+};
+exports.stringArrayToCommaSeparatedString = (arr) => {
+    let str = "";
+    for (let i = 0; i < arr.length; i++) {
+        str += arr[i];
+        if (i !== arr.length - 1) {
+            str += ',';
+        }
+    }
+    return str;
+};
+exports.generateOtp = (numDigits = 4) => {
+    const digits = '0123456789';
+    let OTP = '';
+    for (let i = 0; i < numDigits; i++) {
+        OTP += digits[Math.floor(Math.random() * 10)];
+    }
+    return OTP;
+};
+exports.addDays = (date, days) => {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+};
+exports.addMinutes = (date, minutes) => {
+    let result = new Date(date);
+    result.setMinutes(result.getMinutes() + minutes);
+    return result;
+};
 //# sourceMappingURL=index.js.map

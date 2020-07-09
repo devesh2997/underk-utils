@@ -129,4 +129,60 @@ export const getResponseStatus = (status: number) => {
   };
 };
 
+//mask an email by replacing middle characters with *****
+//eg: ananddevesh22@gmail.com => a***********2@gmail.com
+export const maskEmail = (email: string): string => {
+  let str: string, parts: string[]
+  str = ""
+  parts = email.split('@')
+  const part = parts[0]
+  for (let i = 0; i < part.length; i++) {
+    if (i == 0 || i == part.length - 1) {
+      str += part[i]
+    } else {
+      str += '*'
+    }
+  }
+  return str + '@' + parts[1]
+}
+
+//converts a string array to a comma separated string
+export const stringArrayToCommaSeparatedString = (arr: string[]): string => {
+  let str = ""
+  for (let i = 0; i < arr.length; i++) {
+    str += arr[i]
+    if (i !== arr.length - 1) {
+      str += ','
+    }
+  }
+
+  return str
+}
+
+
+//generate otp
+export const generateOtp = (numDigits: number = 4): string => {
+  const digits = '0123456789'
+  let OTP = ''
+  for (let i = 0; i < numDigits; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)]
+  }
+
+  return OTP
+}
+
+//add days to a given date
+export const addDays = (date: Date, days: number) => {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+//add minutes to a given date
+export const addMinutes = (date: Date, minutes: number) => {
+  let result = new Date(date)
+  result.setMinutes(result.getMinutes() + minutes)
+  return result;
+};
+
 
