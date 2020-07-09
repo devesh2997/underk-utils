@@ -119,12 +119,6 @@ export type ProductCreateInfoValidationResult = {
     // product?: Product
 }
 
-
-export type BulkUploadProductCreateInfo = {
-    productNumber: number,
-    productInfo: ProductCreateInfo
-}
-
 export type ProductCreateInfo = {
     title: string
     slug: string

@@ -12,6 +12,10 @@ import {
 import { MONTHS } from "./constants";
 import { Address } from "types";
 
+import { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo } from "./bulk-upload-products";
+
+export { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo }
+
 //get age from dob
 export const getAge = (date: any) => {
   if (isEmpty(date)) return;
