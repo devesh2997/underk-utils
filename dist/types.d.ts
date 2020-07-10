@@ -122,7 +122,7 @@ export declare type Product = {
     category: Category;
     collections: Collection[];
     skus: SKU[];
-    attribute: AttributeValue[];
+    attributes: AttributeValue[];
     skuAttributes: SKUAttributeValue[];
     optionAttributes: OptionAttributeValue[];
 };

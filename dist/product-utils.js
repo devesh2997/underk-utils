@@ -272,7 +272,7 @@ exports.validateProductCreateInfo = (productInfo, types, categories, collections
         category: productCategory,
         collections: productCollections,
         skuAttributes: skuAttributeValues,
-        attribute: attributeValues,
+        attributes: attributeValues,
         skus: productSKUs,
         status: underk_types_1.PRODUCT_STATUS_STAGED,
         baseSKU: baseSKU,
