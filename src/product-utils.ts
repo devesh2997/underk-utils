@@ -297,7 +297,7 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
         category: productCategory,
         collections: productCollections,
         skuAttributes: skuAttributeValues,
-        attribute: attributeValues,
+        attributes: attributeValues,
         skus: productSKUs,
         status: PRODUCT_STATUS_STAGED,
         baseSKU: baseSKU,
