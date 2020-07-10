@@ -1,5 +1,5 @@
 import { Address } from "types";
-import { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo } from "./bulk-upload-products";
+import { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo } from "./product-utils";
 export { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo };
 export declare const getAge: (date: any) => number | undefined;
 export declare const beautifyName: (firstName?: string | undefined, lastName?: string | undefined) => string;

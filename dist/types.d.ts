@@ -39,7 +39,7 @@ export declare type Subtype = {
     optionAttribute?: OptionAttribute;
 };
 export declare type Attribute = {
-    id?: number;
+    id: number;
     name: string;
     isMultiValued: boolean;
     isCompulsory: boolean;
@@ -47,13 +47,13 @@ export declare type Attribute = {
     values: AttributeValue[];
 };
 export declare type AttributeValue = {
-    id?: number;
+    id: number;
     name: string;
     valueType: string;
     value: string;
 };
 export declare type SKUAttribute = {
-    id?: number;
+    id: number;
     name: string;
     skuOrdering: number;
     variantsBasis: boolean;
@@ -68,12 +68,12 @@ export declare type SKUAttributeValue = {
     value: string;
 };
 export declare type OptionAttribute = {
-    id?: number;
+    id: number;
     name: string;
     values: OptionAttributeValue[];
 };
 export declare type OptionAttributeValue = {
-    id?: number;
+    id: number;
     sku: string;
     name: string;
     valueType: string;
@@ -99,6 +99,32 @@ export declare type Type = {
 export declare type ProductCreateInfoValidationResult = {
     isValid: boolean;
     error?: string;
+    product?: Product;
+};
+export declare type ProductInventory = {
+    warehouse: Warehouse;
+    stock: number;
+    reserved: number;
+};
+export declare type SKU = {
+    sku: string;
+    price: Price;
+    dimensions: Dimensions;
+    inventory: ProductInventory[];
+};
+export declare type Product = {
+    title: string;
+    slug: string;
+    status: string;
+    baseSKU: string;
+    type: Type;
+    subtype: Subtype;
+    category: Category;
+    collections: Collection[];
+    skus: SKU[];
+    attribute: AttributeValue[];
+    skuAttributes: SKUAttributeValue[];
+    optionAttributes: OptionAttributeValue[];
 };
 export declare type ProductCreateInfo = {
     title: string;

@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const constants_1 = require("./constants");
-const bulk_upload_products_1 = require("./bulk-upload-products");
-exports.validateProductCreateInfo = bulk_upload_products_1.validateProductCreateInfo;
-exports.validatePriceInfo = bulk_upload_products_1.validatePriceInfo;
-exports.validateDimensionsInfo = bulk_upload_products_1.validateDimensionsInfo;
+const product_utils_1 = require("./product-utils");
+exports.validateProductCreateInfo = product_utils_1.validateProductCreateInfo;
+exports.validatePriceInfo = product_utils_1.validatePriceInfo;
+exports.validateDimensionsInfo = product_utils_1.validateDimensionsInfo;
 exports.getAge = (date) => {
     if (lodash_1.isEmpty(date))
         return;
