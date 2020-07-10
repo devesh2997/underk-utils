@@ -12,7 +12,7 @@ import {
 import { MONTHS } from "./constants";
 import { Address } from "types";
 
-import { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo } from "./bulk-upload-products";
+import { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo } from "./product-utils";
 
 export { validateProductCreateInfo, validatePriceInfo, validateDimensionsInfo }
 

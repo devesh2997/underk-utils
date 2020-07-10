@@ -45,7 +45,7 @@ export type Subtype = {
 }
 
 export type Attribute = {
-    id?: number,
+    id: number,
     name: string,
     isMultiValued: boolean,
     isCompulsory: boolean,
@@ -54,14 +54,14 @@ export type Attribute = {
 }
 
 export type AttributeValue = {
-    id?: number,
+    id: number,
     name: string,
     valueType: string,
     value: string
 }
 
 export type SKUAttribute = {
-    id?: number,
+    id: number,
     name: string,
     skuOrdering: number,
     variantsBasis: boolean,
@@ -78,13 +78,13 @@ export type SKUAttributeValue = {
 }
 
 export type OptionAttribute = {
-    id?: number,
+    id: number,
     name: string,
     values: OptionAttributeValue[]
 }
 
 export type OptionAttributeValue = {
-    id?: number,
+    id: number,
     sku: string,
     name: string,
     valueType: string,
@@ -115,7 +115,35 @@ export type Type = {
 export type ProductCreateInfoValidationResult = {
     isValid: boolean
     error?: string
-    // product?: Product
+    product?: Product
+}
+
+export type ProductInventory = {
+    warehouse: Warehouse,
+    stock: number,
+    reserved: number
+}
+
+export type SKU = {
+    sku: string,
+    price: Price,
+    dimensions: Dimensions,
+    inventory: ProductInventory[]
+}
+
+export type Product = {
+    title: string,
+    slug: string,
+    status: string,
+    baseSKU: string,
+    type: Type,
+    subtype: Subtype,
+    category: Category,
+    collections: Collection[],
+    skus: SKU[],
+    attribute: AttributeValue[],
+    skuAttributes: SKUAttributeValue[],
+    optionAttributes: OptionAttributeValue[]
 }
 
 export type ProductCreateInfo = {

@@ -6,6 +6,7 @@
     "license": "MIT",
     "dependencies": {
         "@types/lodash": "^4.14.157",
-        "lodash": "^4.17.19"
+        "lodash": "^4.17.19",
+        "underk-types": "https://github.com/devesh2997/underk-types#new"
     }
 }

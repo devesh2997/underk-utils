@@ -1,5 +1,6 @@
-import { Price, Type, ProductCreateInfo, ProductCreateInfoValidationResult, Dimensions, Category, Collection, Warehouse, OptionAttributeValue, SKUAttributeValue } from './types';
+import { Price, Product, Type, ProductCreateInfo, ProductCreateInfoValidationResult, Dimensions, Category, Collection, Warehouse, OptionAttributeValue, SKUAttributeValue, SKUAttribute, Subtype, SKU, ProductInventory, AttributeValue } from './types';
 import { isEmpty } from 'lodash';
+import { PRODUCT_STATUS_STAGED } from "underk-types";
 
 
 const createValidationErrorObject = (error: string) => {
@@ -97,13 +98,17 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
     }
 
     const productInfoCollections = productInfo.collectionsSlugs.map(collectionSlug => collections.find(collection => collection.slug === collectionSlug))
+    const productCollections: Collection[] = []
     for (let i = 0; i < productInfoCollections.length; i++) {
-        if (typeof productInfoCollections[i] === 'undefined') {
+        const piCollection = productInfoCollections[i]
+        if (typeof piCollection === 'undefined') {
             return createValidationErrorObject(`collection with slug ${productInfo.collectionsSlugs[i]} not found`)
+        } else {
+            productCollections.push(piCollection)
         }
     }
 
-    // let attributeValues: AttributeValue[] = []
+    let attributeValues: AttributeValue[] = []
     let optionAttributeValues: OptionAttributeValue[] = []
     let skuAttributeValues: SKUAttributeValue[] = []
     const { productAttributeValues, productSKUAttributeValues, productOptionAttributeValues } = productInfo
@@ -124,6 +129,14 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
             skuAttributeValues.push(productSKUAttributeValue)
         }
     }
+    let baseSKU: string
+    try {
+        baseSKU = createProductBaseSKU(type, subtype, skuAttributeValues)
+    } catch (e) {
+        return createValidationErrorObject(e.toString())
+    }
+
+    let productSKUs: SKU[] = []
 
     if (!isEmpty(subtype.optionAttribute)) {
         if (typeof productOptionAttributeValues !== 'undefined') {
@@ -151,6 +164,7 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
                     return dimensionsValidation
                 }
 
+                let inventory: ProductInventory[] = []
                 if (typeof poav.optionAttributeValueInventory !== 'undefined') {
                     for (let j = 0; j < poav.optionAttributeValueInventory.length; j++) {
                         const productWarehouseInventory = poav.optionAttributeValueInventory[j]
@@ -162,10 +176,25 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
                         if (isNaN(productWarehouseInventory.stock)) {
                             return createValidationErrorObject(`Invalid stock given for warehouse ${productWarehouseInventory.warehouseCode}`)
                         }
+
+                        inventory.push({
+                            warehouse: warehouse,
+                            stock: productWarehouseInventory.stock,
+                            reserved: 0
+                        })
                     }
                 }
                 optionAttributeValues.push(subtypeOptionAttributeValue)
+
+                let sku: SKU = {
+                    sku: baseSKU + "-" + subtypeOptionAttributeValue.sku,
+                    price: poav.optionAttributeValuePrice,
+                    dimensions: poav.optionAttributeValueDimensions,
+                    inventory: inventory
+                }
+                productSKUs.push(sku)
             }
+
         } else {
             return createValidationErrorObject("Atleast one option must be provided")
         }
@@ -188,6 +217,8 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
                 return dimensionsValidation
             }
         }
+
+        let inventory: ProductInventory[] = []
         if (typeof productInfo.productInventory !== 'undefined') {
             for (let j = 0; j < productInfo.productInventory.length; j++) {
                 const productWarehouseInventory = productInfo.productInventory[j]
@@ -199,8 +230,18 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
                 if (isNaN(productWarehouseInventory.stock)) {
                     return createValidationErrorObject(`Invalid stock given for warehouse ${productWarehouseInventory.warehouseCode}`)
                 }
+                inventory.push({ warehouse: warehouse, stock: productWarehouseInventory.stock, reserved: 0, })
             }
         }
+
+        let sku: SKU = {
+            sku: baseSKU,
+            price: productInfo.price,
+            dimensions: productInfo.productDimensions,
+            inventory: inventory
+        }
+
+        productSKUs.push(sku)
 
     }
 
@@ -219,26 +260,48 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
                     }
                 }
             }
+            let subtypeAttributeValue
             if (subtypeAttribute.isMultiValued) {
                 if (typeof a !== 'undefined' && typeof a.attributeValueNames !== 'undefined') {
                     for (let i = 0; i < a.attributeValueNames.length; i++) {
                         const aValueName = a.attributeValueNames[i]
-                        const subtypeAttributeValue = subtypeAttribute.values.find((sav) => sav.name === aValueName)
+                        subtypeAttributeValue = subtypeAttribute.values.find((sav) => sav.name === aValueName)
                         if (typeof subtypeAttributeValue === 'undefined') {
                             return createValidationErrorObject(`Attribute value with name ${aValueName} not found for ${a.attributeName}`)
                         }
+                        attributeValues.push(subtypeAttributeValue)
                     }
                 }
             } else {
                 if (typeof a !== 'undefined') {
-                    const subtypeAttributeValue = subtypeAttribute.values.find((sav) => sav.name === a.attributeValueName)
+                    subtypeAttributeValue = subtypeAttribute.values.find((sav) => sav.name === a.attributeValueName)
                     if (typeof subtypeAttributeValue === 'undefined') {
                         return createValidationErrorObject(`Attribute value with name ${a.attributeValueName} Not found for ${a.attributeName}`)
                     }
+                    attributeValues.push(subtypeAttributeValue)
                 }
 
             }
+
+
+
+
         }
+    }
+
+    let product: Product = {
+        slug: productInfo.slug,
+        title: productInfo.title,
+        type: type,
+        subtype: subtype,
+        category: productCategory,
+        collections: productCollections,
+        skuAttributes: skuAttributeValues,
+        attribute: attributeValues,
+        skus: productSKUs,
+        status: PRODUCT_STATUS_STAGED,
+        baseSKU: baseSKU,
+        optionAttributes: optionAttributeValues,
     }
 
 
@@ -279,6 +342,31 @@ export const validateProductCreateInfo = (productInfo: ProductCreateInfo, types:
     //     }
     // }
 
-    return { isValid: true }
+    return { isValid: true, product: product }
 
+}
+
+
+
+const findSKUOrderforSKUAttributeValue = (skuAttributes: SKUAttribute[], skuAttributeValue: SKUAttributeValue): number => {
+    const skuAttribute = skuAttributes.find(sa => typeof sa.values.find(val => val == skuAttributeValue) !== 'undefined')
+    if (typeof skuAttribute === 'undefined') {
+        throw new Error(`No skuAttribute found which has value ${skuAttributeValue.name}`)
+    } return skuAttribute?.skuOrdering as number
+}
+const createProductBaseSKU = (type: Type, subtype: Subtype, skuAttributeValues: SKUAttributeValue[]): string => {
+    if (typeof type === 'undefined' || typeof subtype === 'undefined' || typeof skuAttributeValues === 'undefined') {
+        throw new Error("type, subtype or skuAttributeValues not provided")
+    }
+    if (typeof subtype.skuAttributes === 'undefined') {
+        throw new Error("subtype must contain skuAttributes")
+    }
+    let baseSKU = ""
+    baseSKU += type.sku
+    baseSKU += `-${subtype.sku}`
+    skuAttributeValues.sort((a, b) => findSKUOrderforSKUAttributeValue(subtype.skuAttributes, a) - findSKUOrderforSKUAttributeValue(subtype.skuAttributes, b))
+    for (let i = 0; i < skuAttributeValues.length; i++) {
+        baseSKU += `-${skuAttributeValues[i].sku}`
+    }
+    return baseSKU
 }
