@@ -87,7 +87,6 @@ export declare type Collection = {
 export declare type Category = {
     id?: number;
     slug: string;
-    sku: string;
     name: string;
     children?: Category[];
 };
